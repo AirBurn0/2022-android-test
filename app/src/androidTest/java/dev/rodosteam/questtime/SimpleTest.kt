@@ -1,23 +1,25 @@
 package dev.rodosteam.questtime
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.core.app.launchActivity
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
+import dev.rodosteam.questtime.screen.common.MainActivity
+import io.github.kakaocup.kakao.text.KButton
 
 import org.junit.Test
-import org.junit.runner.RunWith
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-@RunWith(AndroidJUnit4::class)
 class SimpleTest : TestCase() {
 
     @Test
-    fun test() = run {
+    fun testSearchButton() = run {
         step("Check") {
-
+            launchActivity<MainActivity>()
+            val searchButton = KButton {
+                withId(R.id.search_bar)
+            }
+            searchButton {
+                isVisible()
+                click()
+            }
         }
     }
 }
