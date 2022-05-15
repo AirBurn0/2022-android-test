@@ -3,21 +3,26 @@ package dev.rodosteam.questtime.screen.library
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.rodosteam.questtime.R
 import dev.rodosteam.questtime.databinding.FragmentLibraryBinding
+import dev.rodosteam.questtime.quest.database.Quest
+import dev.rodosteam.questtime.quest.database.QuestDatabase
+import dev.rodosteam.questtime.quest.database.QuestRepository
 import dev.rodosteam.questtime.quest.model.QuestMeta
 import dev.rodosteam.questtime.screen.common.base.BaseFragmentWithOptionMenu
+import dev.rodosteam.questtime.screen.external.ExternalViewModel
+import dev.rodosteam.questtime.utils.ViewModelFactory
 
 class LibraryFragment : BaseFragmentWithOptionMenu() {
 
-    private lateinit var libraryViewModel: LibraryViewModel
-
+    private val viewModel: LibraryViewModel by viewModels { ViewModelFactory(app) }
     private var _binding: FragmentLibraryBinding? = null
     lateinit var adapter: QuestItemAdapter
-    lateinit var quests: MutableList<QuestMeta>
+    val quests: MutableList<Quest> = emptyList<Quest>().toMutableList()
 
     private val binding get() = _binding!!
 
@@ -27,10 +32,13 @@ class LibraryFragment : BaseFragmentWithOptionMenu() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        libraryViewModel = ViewModelProvider(this)[LibraryViewModel::class.java]
+
+        app.metaCloud
+        viewModel.getData()
         _binding = FragmentLibraryBinding.inflate(inflater, container, false)
-        quests = app.questMetaRepo.findAll().toMutableList()
-        adapter = QuestItemAdapter(quests, findNavController(), app.intStorage)
+        quests.clear()
+        quests.addAll(viewModel.loaded.toMutableList())
+        adapter = QuestItemAdapter(quests, findNavController())
         binding.libraryRecyclerView.adapter = adapter
         binding.libraryRecyclerView.layoutManager = LinearLayoutManager(this.context)
         return binding.root
@@ -46,12 +54,16 @@ class LibraryFragment : BaseFragmentWithOptionMenu() {
             override fun onQueryTextChange(p0: String?): Boolean {
                 if (p0 == "") {
                     quests.clear()
-                    quests.addAll(app.questMetaRepo.findAll())
+                    quests.addAll(viewModel.loaded)
                     adapter.notifyDataSetChanged()
                 } else {
-                    quests.clear()
-                    quests.addAll(app.questMetaRepo.findAllByName(p0.toString()))
-                    adapter.notifyDataSetChanged()
+                    if (p0 != null) {
+                        quests.clear()
+                        quests.addAll(viewModel.loaded.filter {
+                            it.title.lowercase().contains(p0.lowercase())
+                        })
+                        adapter.notifyDataSetChanged()
+                    }
                 }
                 return true
             }
