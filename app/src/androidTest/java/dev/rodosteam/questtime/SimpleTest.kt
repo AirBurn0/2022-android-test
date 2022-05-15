@@ -11,8 +11,8 @@ class SimpleTest : TestCase() {
 
     @Test
     fun testSearchButton() = run {
+        launchActivity<MainActivity>()
         step("Check") {
-            launchActivity<MainActivity>()
             val searchButton = KButton {
                 withId(R.id.search_bar)
             }
