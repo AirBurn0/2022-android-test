@@ -3,7 +3,11 @@ package dev.rodosteam.questtime.quest.repo.content
 import dev.rodosteam.questtime.quest.model.QuestContent
 import dev.rodosteam.questtime.quest.repo.meta.QuestMetaRepoJson
 import dev.rodosteam.questtime.utils.InternalStorage
-import org.junit.jupiter.api.Test
+import io.qameta.allure.kotlin.Description
+import io.qameta.allure.kotlin.Feature
+import io.qameta.allure.kotlin.Owner
+import io.qameta.allure.kotlin.junit4.DisplayName
+import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -16,6 +20,10 @@ class QuestContentRepoJsonTest {
     }
 
     @Test
+    @Owner("Saskov Lev")
+    @Feature("Json Content")
+    @DisplayName("Json content parsing")
+    @Description("Indicates whether json content parsing correct or not")
     fun reading_isCorrect() {
         val intStorage = InternalStorage(File(TEST_FILES_DIR))
         val questMetaRepo = QuestMetaRepoJson(intStorage)

@@ -2,13 +2,20 @@ package dev.rodosteam.questtime.quest.repo.meta
 
 import dev.rodosteam.questtime.quest.model.QuestMeta
 import dev.rodosteam.questtime.utils.InternalStorage
-import org.junit.jupiter.api.Test
+import io.qameta.allure.kotlin.Allure
+import io.qameta.allure.kotlin.Description
+import io.qameta.allure.kotlin.Feature
+import io.qameta.allure.kotlin.Owner
+import io.qameta.allure.kotlin.junit4.DisplayName
+import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class QuestMetaRepoJsonTest {
     companion object {
         private const val TEST_FILES_DIR = "../test_files"
+        private const val TEST_INCORRECT_FILES_DIR = "../incorrect_test_files"
         private val TEST_META = QuestMeta(
             id = -1,
             title = "Test quest",
@@ -23,9 +30,44 @@ class QuestMetaRepoJsonTest {
     }
 
     @Test
+    @Owner("Saskov Lev")
+    @Feature("Json Metadata")
+    @DisplayName("Json metadata parsing")
+    @Description("Indicates whether json metadata parsing correct or not")
     fun reading_isCorrect() {
-        val questMetaRepo = QuestMetaRepoJson(InternalStorage(File(TEST_FILES_DIR)))
-        val meta = questMetaRepo.findById(TEST_META.id)
-        assertEquals(TEST_META, meta)
+        var questMetaRepo : QuestMetaRepoJson? = null
+        var meta : QuestMeta? = null
+        Allure.step("Find files in storage") {
+            questMetaRepo = QuestMetaRepoJson(InternalStorage(File(TEST_FILES_DIR)))
+            assertNotNull(questMetaRepo)
+        }
+        Allure.step("Find same meta in repository") {
+            meta = questMetaRepo?.findById(TEST_META.id)
+            assertNotNull(meta)
+        }
+        Allure.step("Check equality") {
+            assertEquals(TEST_META, meta)
+        }
+    }
+
+    @Test
+    @Owner("Baidiya Rosan")
+    @Feature("Json Metadata")
+    @DisplayName("Json incorrect metadata parsing")
+    @Description("Indicates whether json metadata parsing correct or not, even it's incorrect")
+    fun reading_isIncorrect() {
+        var questMetaRepo : QuestMetaRepoJson? = null
+        var meta : QuestMeta? = null
+        Allure.step("Find files in storage") {
+            questMetaRepo = QuestMetaRepoJson(InternalStorage(File(TEST_INCORRECT_FILES_DIR)))
+            assertNotNull(questMetaRepo)
+        }
+        Allure.step("Find same meta in repository") {
+            meta = questMetaRepo?.findById(TEST_META.id)
+            assertNotNull(meta)
+        }
+        Allure.step("Check equality") {
+            assertEquals(TEST_META, meta)
+        }
     }
 }
