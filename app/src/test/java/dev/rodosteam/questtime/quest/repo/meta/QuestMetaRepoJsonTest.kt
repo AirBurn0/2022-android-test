@@ -3,10 +3,8 @@ package dev.rodosteam.questtime.quest.repo.meta
 import dev.rodosteam.questtime.quest.model.QuestMeta
 import dev.rodosteam.questtime.utils.InternalStorage
 import io.qameta.allure.kotlin.Allure
-import io.qameta.allure.kotlin.Description
-import io.qameta.allure.kotlin.Feature
-import io.qameta.allure.kotlin.Owner
-import io.qameta.allure.kotlin.junit4.DisplayName
+import io.qameta.allure.*
+import io.qameta.allure.junit4.DisplayName
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
@@ -31,8 +29,7 @@ class QuestMetaRepoJsonTest {
 
     @Test
     @Owner("Saskov Lev")
-    @Feature("Json Metadata")
-    @DisplayName("Json metadata parsing")
+    @DisplayName("ABCDEF")
     @Description("Indicates whether json metadata parsing correct or not")
     fun reading_isCorrect() {
         var questMetaRepo : QuestMetaRepoJson? = null
@@ -53,6 +50,7 @@ class QuestMetaRepoJsonTest {
     @Test
     @Owner("Baidiya Rosan")
     @Feature("Json Metadata")
+    @Stories(Story("Reading is incorrect!"))
     @DisplayName("Json incorrect metadata parsing")
     @Description("Indicates whether json metadata parsing correct or not, even it's incorrect")
     fun reading_isIncorrect() {
